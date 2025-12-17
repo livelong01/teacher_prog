@@ -1,0 +1,43 @@
+# Ambientes Virtuais (Virtual Environments)
+venv/
+.venv/
+env/
+ENV/
+bin/
+lib/
+
+# Python (Arquivos compilados e cache)
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Variáveis de ambiente (Segurança!)
+.env
+.venv
+env.bak
+venv.bak
+
+# VS Code
+.vscode/
+
+# PyCharm
+.idea/
+
+# Sistema Operacional
+.DS_Store
+Thumbs.db
