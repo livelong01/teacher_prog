@@ -99,8 +99,8 @@ def criar_card_aluno(pai, aluno):
         font=("Arial", 8), command=lambda: excluir_aluno(frame, aluno)
     )
     btn_excluir.pack(side="right", padx=5)
-
-    # Botão de Editar (Adicione isso dentro da função criar_card_aluno)
+    
+        # Botão de Editar (Adicione isso dentro da função criar_card_aluno)
     btn_editar = tk.Button(
         frame, text="Editar", fg="black", bg="#FFD700", # Cor amarela/ouro
         font=("Arial", 8), command=lambda: abrir_janela_edicao(aluno)
@@ -262,7 +262,16 @@ def configurar_scroll(event):
 container.bind("<Configure>", configurar_scroll)
 
 def _on_mousewheel(event):
-    canvas.yview_scroll(int(-1*(event.delta/120)), "units")
+    # Obtém a altura atual do Canvas (o que aparece na tela)
+    altura_visivel = canvas.winfo_height()
+    # Obtém a altura total de todos os cards somados
+    altura_total = container.winfo_height()
+
+    # Só permite o scroll se o conteúdo for maior que a janela
+    if altura_total > altura_visivel:
+        canvas.yview_scroll(int(-1*(event.delta/120)), "units")
+
+        
 canvas.bind_all("<MouseWheel>", _on_mousewheel)
 
 # --- CARGA INICIAL ---
