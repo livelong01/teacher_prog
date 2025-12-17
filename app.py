@@ -1,21 +1,15 @@
 import tkinter as tk
 import webbrowser
+import json
+import os
 
-# Lista de alunos com links
-alunos = [
-    {
-        "nome": "Ana",
-        "link": "https://meet.google.com/ana-link"
-    },
-    {
-        "nome": "Bruno",
-        "link": "https://meet.google.com/bruno-link"
-    },
-    {
-        "nome": "Carlos",
-        "link": "https://meet.google.com/carlos-link"
-    }
-]
+ARQUIVO = "alunos.json"
+
+def carregar_alunos():
+    if not os.path.exists(ARQUIVO):
+        return []
+    with open(ARQUIVO, "r", encoding="utf-8") as f:
+        return json.load(f)
 
 def entrar_na_reuniao():
     selecionado = lista.curselection()
@@ -25,6 +19,9 @@ def entrar_na_reuniao():
     indice = selecionado[0]
     link = alunos[indice]["link"]
     webbrowser.open(link)
+
+# Carregar alunos
+alunos = carregar_alunos()
 
 # Janela principal
 janela = tk.Tk()
@@ -43,11 +40,11 @@ titulo.pack(pady=10)
 lista = tk.Listbox(janela, width=40, height=10)
 lista.pack(pady=20)
 
-# Inserir alunos
+# Inserir alunos na lista
 for aluno in alunos:
     lista.insert(tk.END, aluno["nome"])
 
-# Botão para entrar no Meet
+# Botão
 botao = tk.Button(
     janela,
     text="Entrar na reunião",
