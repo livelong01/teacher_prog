@@ -10,5 +10,10 @@
   {
     "nome": "jonathan",
     "link": "https://meet.google.com/tir-degt-esq"
+  },
+  {
+    "nome": "luna",
+    "link": "facebook.com",
+    "foto": "fotos\\luna.png"
   }
 ]

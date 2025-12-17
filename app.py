@@ -3,6 +3,8 @@ import webbrowser
 import json
 import os
 from PIL import Image, ImageTk
+from tkinter import filedialog, messagebox
+import shutil
 
 ARQUIVO = "alunos.json"
 
@@ -42,7 +44,11 @@ def criar_card_aluno(pai, aluno):
 def abrir_janela_cadastro():
     cadastro = tk.Toplevel(janela)
     cadastro.title("Adicionar aluno")
-    cadastro.geometry("350x300")
+    cadastro.geometry("350x400") # Aumentei um pouco a altura
+
+    # Variável para guardar o caminho da foto selecionada
+    # Começa com o padrão caso o usuário não escolha uma
+    foto_selecionada = {"caminho": "fotos/padrao.png"}
 
     tk.Label(cadastro, text="Nome").pack(pady=5)
     campo_nome = tk.Entry(cadastro, width=40)
@@ -52,21 +58,57 @@ def abrir_janela_cadastro():
     campo_link = tk.Entry(cadastro, width=40)
     campo_link.pack(pady=5)
 
+    # Label para mostrar o nome do arquivo selecionado
+    label_status_foto = tk.Label(cadastro, text="Nenhuma foto selecionada", fg="gray")
+    
+    def selecionar_foto():
+        caminho = filedialog.askopenfilename(
+            title="Selecionar Foto",
+            filetypes=[("Imagens", "*.jpg *.jpeg *.png *.bmp")]
+        )
+        if caminho:
+            foto_selecionada["caminho"] = caminho
+            nome_arquivo = os.path.basename(caminho)
+            label_status_foto.config(text=f"Foto: {nome_arquivo}", fg="green")
+
+    tk.Button(cadastro, text="Upload Foto", command=selecionar_foto).pack(pady=5)
+    label_status_foto.pack()
+
     def salvar():
-        aluno = {
-            "nome": campo_nome.get().strip(),
-            "link": campo_link.get().strip(),
-            "foto": "fotos/padrao.png"
-        }
-        if not aluno["nome"] or not aluno["link"]:
+        nome = campo_nome.get().strip()
+        link = campo_link.get().strip()
+        
+        if not nome or not link:
+            messagebox.showwarning("Erro", "Nome e Link são obrigatórios!")
             return
+
+        # Lógica para copiar a foto para a pasta 'fotos'
+        caminho_final = "fotos/padrao.png"
+        if foto_selecionada["caminho"] != "fotos/padrao.png":
+            # Garante que a pasta existe
+            if not os.path.exists("fotos"):
+                os.makedirs("fotos")
+            
+            # Gera um nome de arquivo baseado no nome do aluno para evitar duplicatas
+            extensao = os.path.splitext(foto_selecionada["caminho"])[1]
+            nome_arquivo = f"{nome.lower().replace(' ', '_')}{extensao}"
+            caminho_final = os.path.join("fotos", nome_arquivo)
+            
+            # Copia o arquivo original para a pasta do projeto
+            shutil.copy(foto_selecionada["caminho"], caminho_final)
+
+        aluno = {
+            "nome": nome,
+            "link": link,
+            "foto": caminho_final
+        }
 
         alunos.append(aluno)
         salvar_alunos()
         criar_card_aluno(container, aluno)
         cadastro.destroy()
 
-    tk.Button(cadastro, text="Salvar", command=salvar).pack(pady=20)
+    tk.Button(cadastro, text="Salvar Aluno", bg="blue", fg="white", command=salvar).pack(pady=20)
 
 # Carregar alunos
 alunos = carregar_alunos()
