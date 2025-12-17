@@ -2,6 +2,7 @@ import tkinter as tk
 import webbrowser
 import json
 import os
+from PIL import Image, ImageTk
 
 ARQUIVO = "alunos.json"
 
@@ -15,37 +16,54 @@ def salvar_alunos():
     with open(ARQUIVO, "w", encoding="utf-8") as f:
         json.dump(alunos, f, ensure_ascii=False, indent=2)
 
-def entrar_na_reuniao():
-    selecionado = lista.curselection()
-    if not selecionado:
-        return
-    indice = selecionado[0]
-    webbrowser.open(alunos[indice]["link"])
+def abrir_reuniao(link):
+    webbrowser.open(link)
+
+def criar_card_aluno(pai, aluno):
+    frame = tk.Frame(pai, bd=1, relief="solid", padx=5, pady=5)
+    frame.pack(fill="x", pady=5, padx=10)
+
+    caminho_foto = aluno.get("foto", "fotos/padrao.png")
+    img = Image.open(caminho_foto).resize((50, 50))
+    foto = ImageTk.PhotoImage(img)
+
+    btn = tk.Button(
+        frame,
+        image=foto,
+        text=aluno["nome"],
+        compound="left",
+        command=lambda: abrir_reuniao(aluno["link"]),
+        anchor="w",
+        padx=10
+    )
+    btn.image = foto
+    btn.pack(fill="x")
 
 def abrir_janela_cadastro():
     cadastro = tk.Toplevel(janela)
     cadastro.title("Adicionar aluno")
-    cadastro.geometry("350x250")
+    cadastro.geometry("350x300")
 
-    tk.Label(cadastro, text="Nome do aluno").pack(pady=5)
+    tk.Label(cadastro, text="Nome").pack(pady=5)
     campo_nome = tk.Entry(cadastro, width=40)
     campo_nome.pack(pady=5)
 
-    tk.Label(cadastro, text="Link da reunião").pack(pady=5)
+    tk.Label(cadastro, text="Link").pack(pady=5)
     campo_link = tk.Entry(cadastro, width=40)
     campo_link.pack(pady=5)
 
     def salvar():
-        nome = campo_nome.get().strip()
-        link = campo_link.get().strip()
-        if not nome or not link:
+        aluno = {
+            "nome": campo_nome.get().strip(),
+            "link": campo_link.get().strip(),
+            "foto": "fotos/padrao.png"
+        }
+        if not aluno["nome"] or not aluno["link"]:
             return
 
-        aluno = {"nome": nome, "link": link}
         alunos.append(aluno)
         salvar_alunos()
-
-        lista.insert(tk.END, nome)
+        criar_card_aluno(container, aluno)
         cadastro.destroy()
 
     tk.Button(cadastro, text="Salvar", command=salvar).pack(pady=20)
@@ -56,28 +74,24 @@ alunos = carregar_alunos()
 # Janela principal
 janela = tk.Tk()
 janela.title("Acesso rápido aos Meets")
-janela.geometry("500x400")
+janela.geometry("500x500")
 
-# Título
 tk.Label(
     janela,
-    text="Lista de Alunos",
+    text="Alunos",
     font=("Arial", 16, "bold")
 ).pack(pady=10)
 
-# Listbox
-lista = tk.Listbox(janela, width=40, height=10)
-lista.pack(pady=10)
+container = tk.Frame(janela)
+container.pack(fill="both", expand=True)
 
 for aluno in alunos:
-    lista.insert(tk.END, aluno["nome"])
+    criar_card_aluno(container, aluno)
 
-# Botões
-frame_botoes = tk.Frame(janela)
-frame_botoes.pack(pady=10)
+tk.Button(
+    janela,
+    text="Adicionar aluno",
+    command=abrir_janela_cadastro
+).pack(pady=10)
 
-tk.Button(frame_botoes, text="Entrar na reunião", command=entrar_na_reuniao).pack(side=tk.LEFT, padx=5)
-tk.Button(frame_botoes, text="Adicionar aluno", command=abrir_janela_cadastro).pack(side=tk.LEFT, padx=5)
-
-# Loop
 janela.mainloop()
