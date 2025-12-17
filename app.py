@@ -1,10 +1,12 @@
 import tkinter as tk
-import webbrowser
 
-def entrar_na_reuniao():
-    link = campo_link.get()
-    if link.strip():
-        webbrowser.open(link)
+# Lista de alunos (por enquanto fixa)
+alunos = [
+    "Ana",
+    "Bruno",
+    "Carlos",
+    "Daniela"
+]
 
 # Janela principal
 janela = tk.Tk()
@@ -14,22 +16,18 @@ janela.geometry("500x400")
 # Título
 titulo = tk.Label(
     janela,
-    text="Meet dos Alunos",
+    text="Lista de Alunos",
     font=("Arial", 16, "bold")
 )
-titulo.pack(pady=20)
+titulo.pack(pady=10)
 
-# Campo de texto
-campo_link = tk.Entry(janela, width=50)
-campo_link.pack(pady=10)
+# Listbox
+lista = tk.Listbox(janela, width=40, height=10)
+lista.pack(pady=20)
 
-# Botão
-botao = tk.Button(
-    janela,
-    text="Entrar na reunião",
-    command=entrar_na_reuniao
-)
-botao.pack(pady=20)
+# Inserir alunos na lista
+for aluno in alunos:
+    lista.insert(tk.END, aluno)
 
 # Loop da janela
 janela.mainloop()
