@@ -1,12 +1,30 @@
 import tkinter as tk
+import webbrowser
 
-# Lista de alunos (por enquanto fixa)
+# Lista de alunos com links
 alunos = [
-    "Ana",
-    "Bruno",
-    "Carlos",
-    "Daniela"
+    {
+        "nome": "Ana",
+        "link": "https://meet.google.com/ana-link"
+    },
+    {
+        "nome": "Bruno",
+        "link": "https://meet.google.com/bruno-link"
+    },
+    {
+        "nome": "Carlos",
+        "link": "https://meet.google.com/carlos-link"
+    }
 ]
+
+def entrar_na_reuniao():
+    selecionado = lista.curselection()
+    if not selecionado:
+        return
+
+    indice = selecionado[0]
+    link = alunos[indice]["link"]
+    webbrowser.open(link)
 
 # Janela principal
 janela = tk.Tk()
@@ -25,9 +43,17 @@ titulo.pack(pady=10)
 lista = tk.Listbox(janela, width=40, height=10)
 lista.pack(pady=20)
 
-# Inserir alunos na lista
+# Inserir alunos
 for aluno in alunos:
-    lista.insert(tk.END, aluno)
+    lista.insert(tk.END, aluno["nome"])
 
-# Loop da janela
+# Botão para entrar no Meet
+botao = tk.Button(
+    janela,
+    text="Entrar na reunião",
+    command=entrar_na_reuniao
+)
+botao.pack(pady=10)
+
+# Loop
 janela.mainloop()
