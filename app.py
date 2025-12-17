@@ -164,6 +164,8 @@ def excluir_aluno(frame_aluno, aluno):
 
 # Carregar alunos
 alunos = carregar_alunos()
+# Ordena a lista de dicionários pela chave "nome"
+alunos.sort(key=lambda x: x["nome"].lower())
 
 # Janela principal
 janela = tk.Tk()
@@ -176,9 +178,63 @@ tk.Label(
     font=("Arial", 16, "bold")
 ).pack(pady=10)
 
-container = tk.Frame(janela)
-container.pack(fill="both", expand=True)
+# --- ÁREA DE BUSCA ---
+tk.Label(janela, text="Pesquisar aluno:", font=("Arial", 10)).pack()
+campo_busca = tk.Entry(janela, font=("Arial", 12), width=35)
+campo_busca.pack(pady=5)
 
+def filtrar_alunos(event=None):
+    termo = campo_busca.get().lower()
+    for widget in container.winfo_children():
+        widget.destroy()
+    for aluno in alunos:
+        if termo in aluno["nome"].lower():
+            criar_card_aluno(container, aluno)
+
+campo_busca.bind("<KeyRelease>", filtrar_alunos)
+
+# --- INÍCIO DA ÁREA DE SCROLL ---
+# 1. Criar um frame para conter o Canvas e a Scrollbar
+frame_principal = tk.Frame(janela)
+frame_principal.pack(fill="both", expand=True, padx=5, pady=5)
+
+# 2. Criar o Canvas
+canvas = tk.Canvas(frame_principal)
+canvas.pack(side="left", fill="both", expand=True)
+
+# 3. Adicionar a Scrollbar lateral
+scrollbar = tk.Scrollbar(frame_principal, orient="vertical", command=canvas.yview)
+scrollbar.pack(side="right", fill="y")
+
+# 4. Configurar o Canvas para usar a Scrollbar
+canvas.configure(yscrollcommand=scrollbar.set)
+
+# 5. Criar o Frame INTERNO onde os cards serão colocados
+container = tk.Frame(canvas)
+
+# 6. Colocar o container dentro do canvas
+canvas_frame = canvas.create_window((0, 0), window=container, anchor="nw")
+
+# Atualiza a largura do container para preencher o canvas
+def ajustar_largura(event):
+    canvas.itemconfig(canvas_frame, width=event.width)
+
+canvas.bind("<Configure>", ajustar_largura)
+
+# Atualiza a área de rolagem sempre que o tamanho do container mudar
+def configurar_scroll(event):
+    canvas.configure(scrollregion=canvas.bbox("all"))
+
+container.bind("<Configure>", configurar_scroll)
+
+# Suporte para o scroll do mouse
+def _on_mousewheel(event):
+    canvas.yview_scroll(int(-1*(event.delta/120)), "units")
+
+canvas.bind_all("<MouseWheel>", _on_mousewheel)
+# --- FIM DA ÁREA DE SCROLL ---
+
+# O restante do seu código continua quase igual
 for aluno in alunos:
     criar_card_aluno(container, aluno)
 
