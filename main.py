@@ -94,16 +94,24 @@ def criar_card_aluno(pai, aluno):
     btn.image = foto # Referência para o lixo do Python não apagar a imagem
     btn.pack(side="left", fill="x", expand=True)
     
+    # --- ÍCONE DE STATUS (BOLINHA) ---
+    cor = obter_cor_status(aluno["link"])
+    status_dot = tk.Canvas(frame, width=12, height=12, highlightthickness=0)
+    status_dot.create_oval(2, 2, 10, 10, fill=cor, outline="black")
+    status_dot.pack(side="left", padx=5)
+
     btn_excluir = tk.Button(
-        frame, text="✖", fg="white", bg="#ff4444",
-        font=("Arial", 8), command=lambda: excluir_aluno(frame, aluno)
+        frame, text="Excluir", fg="white", bg="#ff4444",
+        font=("Arial", 8, "bold"), command=lambda: excluir_aluno(frame, aluno),
+        width=6 # Adicione largura fixa
     )
     btn_excluir.pack(side="right", padx=5)
     
         # Botão de Editar (Adicione isso dentro da função criar_card_aluno)
     btn_editar = tk.Button(
-        frame, text="Editar", fg="black", bg="#FFD700", # Cor amarela/ouro
-        font=("Arial", 8), command=lambda: abrir_janela_edicao(aluno)
+        frame, text="Editar", fg="black", bg="#FFD700",
+        font=("Arial", 8, "bold"), command=lambda: abrir_janela_edicao(aluno),
+        width=6 # Adicione largura fixa
     )
     btn_editar.pack(side="right", padx=2)
 
@@ -223,6 +231,15 @@ def abrir_janela_edicao(aluno_antigo):
     tk.Button(edicao, text="SALVAR ALTERAÇÕES", bg="#FF9800", fg="white", 
               font=("Arial", 10, "bold"), command=salvar_alteracoes).pack(pady=30)
 
+def obter_cor_status(link):
+    # Verifica se é um link do Meet
+    if "meet.google.com" in link.lower():
+        return "#28a745" # Verde (Meet)
+    elif link.startswith("http"):
+        return "#ffc107" # Amarelo (Outro link)
+    else:
+        return "#dc3545" # Vermelho (Inválido/Incompleto)
+
 # --- INICIALIZAÇÃO DA JANELA PRINCIPAL ---
 
 alunos = carregar_alunos()
@@ -271,7 +288,7 @@ def _on_mousewheel(event):
     if altura_total > altura_visivel:
         canvas.yview_scroll(int(-1*(event.delta/120)), "units")
 
-        
+
 canvas.bind_all("<MouseWheel>", _on_mousewheel)
 
 # --- CARGA INICIAL ---
