@@ -1,19 +1,7 @@
 [
   {
-    "nome": "Ana",
-    "link": "https://meet.google.com/ana-link"
-  },
-  {
-    "nome": "Bruno",
-    "link": "https://meet.google.com/bruno-link"
-  },
-  {
     "nome": "jonathan",
-    "link": "https://meet.google.com/tir-degt-esq"
-  },
-  {
-    "nome": "luna",
     "link": "facebook.com",
-    "foto": "fotos\\luna.png"
+    "foto": "fotos\\jonathan.png"
   }
 ]

@@ -22,13 +22,23 @@ def abrir_reuniao(link):
     webbrowser.open(link)
 
 def criar_card_aluno(pai, aluno):
+    # Criamos um frame principal para o card
     frame = tk.Frame(pai, bd=1, relief="solid", padx=5, pady=5)
     frame.pack(fill="x", pady=5, padx=10)
 
-    caminho_foto = aluno.get("foto", "fotos/padrao.png")
-    img = Image.open(caminho_foto).resize((50, 50))
-    foto = ImageTk.PhotoImage(img)
+    # Carregar a imagem
+    try:
+        caminho_foto = aluno.get("foto", "fotos/padrao.png")
+        if not os.path.exists(caminho_foto):
+            caminho_foto = "fotos/padrao.png"
+        img = Image.open(caminho_foto).resize((50, 50))
+        foto = ImageTk.PhotoImage(img)
+    except:
+        # Caso a imagem esteja corrompida ou inacessível
+        img = Image.open("fotos/padrao.png").resize((50, 50))
+        foto = ImageTk.PhotoImage(img)
 
+    # Botão principal (Nome + Foto) - agora usando 'side' para organizar
     btn = tk.Button(
         frame,
         image=foto,
@@ -36,15 +46,33 @@ def criar_card_aluno(pai, aluno):
         compound="left",
         command=lambda: abrir_reuniao(aluno["link"]),
         anchor="w",
-        padx=10
+        padx=10,
+        relief="flat"
     )
     btn.image = foto
-    btn.pack(fill="x")
+    btn.pack(side="left", fill="x", expand=True)
+
+    # Botão de Excluir (Lixeira)
+    btn_excluir = tk.Button(
+        frame,
+        text="✖",
+        fg="white",
+        bg="#ff4444",
+        font=("Arial", 5),
+        command=lambda: excluir_aluno(frame, aluno),
+        padx=2
+    )
+    btn_excluir.pack(side="right", padx=5)
 
 def abrir_janela_cadastro():
     cadastro = tk.Toplevel(janela)
     cadastro.title("Adicionar aluno")
     cadastro.geometry("350x400") # Aumentei um pouco a altura
+
+    # Faz com que a janela principal fique "travada" até fechar esta
+    cadastro.grab_set() 
+    # (Opcional) Garante que ela comece na frente
+    cadastro.focus_set()
 
     # Variável para guardar o caminho da foto selecionada
     # Começa com o padrão caso o usuário não escolha uma
@@ -70,6 +98,8 @@ def abrir_janela_cadastro():
             foto_selecionada["caminho"] = caminho
             nome_arquivo = os.path.basename(caminho)
             label_status_foto.config(text=f"Foto: {nome_arquivo}", fg="green")
+            #cadastro.lift()          # Traz a janela para frente das outras
+            #cadastro.focus_force()
 
     tk.Button(cadastro, text="Upload Foto", command=selecionar_foto).pack(pady=5)
     label_status_foto.pack()
@@ -109,6 +139,28 @@ def abrir_janela_cadastro():
         cadastro.destroy()
 
     tk.Button(cadastro, text="Salvar Aluno", bg="blue", fg="white", command=salvar).pack(pady=20)
+    
+def excluir_aluno(frame_aluno, aluno):
+    # Pergunta se o usuário tem certeza
+    confirmar = messagebox.askyesno("Confirmar", f"Deseja excluir o aluno {aluno['nome']}?")
+    
+    if confirmar:
+        # 1. Remover da lista 'alunos' (variável global)
+        global alunos
+        alunos = [a for a in alunos if a != aluno]
+        
+        # 2. Salvar o JSON atualizado
+        salvar_alunos()
+        
+        # 3. Excluir o arquivo de foto (se não for a padrão)
+        if aluno["foto"] != "fotos/padrao.png" and os.path.exists(aluno["foto"]):
+            try:
+                os.remove(aluno["foto"])
+            except Exception as e:
+                print(f"Erro ao deletar foto: {e}")
+        
+        # 4. Remover o card da interface
+        frame_aluno.destroy()
 
 # Carregar alunos
 alunos = carregar_alunos()
