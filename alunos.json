@@ -1,37 +1,7 @@
 [
   {
-    "nome": "asdasdasd",
-    "link": "asdsadsad",
-    "foto": "fotos/padrao.png"
-  },
-  {
-    "nome": "asdasdsa",
-    "link": "sdasdasd",
-    "foto": "fotos/padrao.png"
-  },
-  {
-    "nome": "dsadsad",
-    "link": "dasdsadsa",
-    "foto": "fotos\\dsadsad.png"
-  },
-  {
-    "nome": "jonathan",
-    "link": "facebook.com",
-    "foto": "fotos\\jonathan.png"
-  },
-  {
-    "nome": "sadadasasd",
-    "link": "asdasdsa",
-    "foto": "fotos/padrao.png"
-  },
-  {
-    "nome": "sadasd",
-    "link": "sadasdas",
-    "foto": "fotos/padrao.png"
-  },
-  {
-    "nome": "zuleica",
-    "link": "mac.com",
-    "foto": "fotos\\zuleica.png"
+    "nome": "exemplo",
+    "link": "https://meet.google.com/tir-degt-esq",
+    "foto": "fotos\\mateus.png"
   }
 ]
