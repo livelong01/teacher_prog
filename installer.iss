@@ -1,9 +1,9 @@
 [Setup]
 AppName=Meets dos Alunos
-AppVersion=1.0
-DefaultDirName={pf}\MeetsDosAlunos
+AppVersion=1.1
+DefaultDirName={commonpf}\MeetsDosAlunos
 DefaultGroupName=Meets dos Alunos
-OutputBaseFilename=MeetsInstaller
+OutputBaseFilename=MeetsInstaller_v1.1
 Compression=lzma
 SolidCompression=yes
 

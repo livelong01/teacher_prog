@@ -23,6 +23,14 @@ def run_app():
             janela.iconbitmap(str(icon_path))
         except Exception:
             pass
+        try:
+            # Also set a PhotoImage icon (works better on some platforms)
+            img = Image.open(icon_path)
+            photo = ImageTk.PhotoImage(img)
+            janela.iconphoto(False, photo)
+            janela._icon_photo = photo
+        except Exception:
+            pass
 
     # --- variáveis que serão fechadas nas funções internas ---
     container = None

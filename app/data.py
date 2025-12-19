@@ -106,8 +106,9 @@ def copy_photo(src_path, dest_name):
             else:
                 im = im.convert("RGB")
 
-            # Resize keeping aspect ratio
-            max_size = (800, 800)
+            # Resize keeping aspect ratio (now smaller thumbnails to reduce size)
+            # Target size requested: 50x55
+            max_size = (50, 55)
             im.thumbnail(max_size, Image.LANCZOS)
 
             # Save as optimized JPEG

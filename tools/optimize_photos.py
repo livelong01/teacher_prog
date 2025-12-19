@@ -22,7 +22,7 @@ def optimize_image(path: Path):
                 im = bg
             else:
                 im = im.convert("RGB")
-            im.thumbnail((800,800), Image.LANCZOS)
+            im.thumbnail((50,55), Image.LANCZOS)
             dest = path.with_suffix('.jpg')
             im.save(dest, format='JPEG', quality=75, optimize=True)
             if dest != path:
